@@ -12,16 +12,16 @@ void UAscensionPlayerHUD::NativeConstruct()
 
 void UAscensionPlayerHUD::SetHealthPercent(float Percent)
 {
-	if (HealthBar != nullptr)
+	if (HealthProgressBar != nullptr)
 	{
-		HealthBar->SetPercent(Percent);
+		HealthProgressBar->SetPercent(Percent);
 	}
 }
 
 void UAscensionPlayerHUD::SetStaminaPercent(float Percent)
 {
-	if (StaminaBar != nullptr)
+	if (StaminaProgressBar != nullptr)
 	{
-		StaminaBar->SetPercent(Percent);
+		StaminaProgressBar->SetPercent(Percent);
 	}
 }

@@ -20,9 +20,6 @@ UCombatComponent::UCombatComponent()
 	PrimaryComponentTick.bCanEverTick = false;
 
 	// ...
-	InitializeWidget();
-	UpdateHealthWidget();
-	UpdateStaminaWidget();
 }
 
 // Called when the game starts
@@ -33,35 +30,6 @@ void UCombatComponent::BeginPlay()
 	// ...
 	AnimInstance = OwnerCharacter->GetMesh()->GetAnimInstance();
 	Status.HP = Status.MaxHP;
-}
-
-void UCombatComponent::UpdateHealthWidget()
-{
-	if (StatusWidget != nullptr)
-	{
-		StatusWidget->SetHealthPercent(GetHealth() / GetMaxHealth());
-	}
-}
-
-void UCombatComponent::UpdateStaminaWidget()
-{
-	if (StatusWidget != nullptr)
-	{
-		StatusWidget->SetStaminaPercent(GetStamina() / GetMaxStamina());
-	}
-}
-
-void UCombatComponent::InitializeWidget()
-{
-	AAscender* const Player = Cast<AAscender>(GetOwner());
-	if (Player != nullptr)
-	{
-		UWidgetComponent* const PlayerHUD = Player->GetPlayerHUD();
-		if (PlayerHUD != nullptr)
-		{
-			StatusWidget = Cast<UAscensionPlayerHUD>(PlayerHUD->GetUserWidgetObject());
-		}
-	}
 }
 
 

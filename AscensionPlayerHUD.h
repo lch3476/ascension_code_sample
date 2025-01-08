@@ -22,8 +22,8 @@ public:
 
 private:
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true", BindWidget))
-	class UProgressBar* HealthBar = nullptr;
+	class UProgressBar* HealthProgressBar = nullptr;
 
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true", BindWidget))
-	class UProgressBar* StaminaBar = nullptr;
+	class UProgressBar* StaminaProgressBar = nullptr;
 };

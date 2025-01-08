@@ -26,7 +26,6 @@ EBTNodeResult::Type UBTTask_MeleeAttack::ExecuteTask(UBehaviorTreeComponent& Own
 		{
 			if (CombatNPC->IsAnimMontageFinished())
 			{
-				UE_LOG(LogTemp, Warning, TEXT("YEs"));
 				CombatNPC->Execute_MeleeAttack(CombatNPC);
 			}
 		}

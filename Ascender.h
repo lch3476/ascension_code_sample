@@ -78,6 +78,8 @@ private:
 	void ClampLookUpAngle();
 	void RotateWhileRolling(float DeltaTime);
 	void CalculateRollTargetDirection();
+	void UpdateHealthWidget();
+	void UpdateStaminaWidget();
 
 	void MeleeAttack_Implementation() override;
 	void DashAttack_Implementation() override;
@@ -97,6 +99,8 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class UWidgetComponent* PlayerHUD;
+
+	class UAscensionPlayerHUD* StatusWidget;
 
 	class UAIPerceptionStimuliSourceComponent* StimulusSource;
 

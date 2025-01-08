@@ -14,6 +14,8 @@ class ASCENSION_API AEquipableItem : public AItem
 {
 	GENERATED_BODY()
 
-	public:
-		virtual void OnEquip() PURE_VIRTUAL(AEquipableItem::OnEquip, );
+public:
+	virtual void OnEquip() PURE_VIRTUAL(AEquipableItem::OnEquip, );
+
+protected:
 };

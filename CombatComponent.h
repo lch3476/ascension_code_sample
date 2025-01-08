@@ -34,9 +34,6 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
-	void UpdateHealthWidget();
-	void UpdateStaminaWidget();
-	void InitializeWidget();
 
 public:	
 	// Called every frame
@@ -54,6 +51,4 @@ private:
 	class AAscensionCharacter* OwnerCharacter;
 
 	class UAnimInstance* AnimInstance;
-
-	class UAscensionPlayerHUD* StatusWidget;
 };

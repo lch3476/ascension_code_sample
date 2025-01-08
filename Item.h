@@ -15,13 +15,24 @@ public:
 	// Sets default values for this actor's properties
 	AItem();
 
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	UFUNCTION()
+	virtual void OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+		const FHitResult& SweepResult) PURE_VIRTUAL(AItem::OnComponentBeginOverlap, );
+
+private:
+	void SetupBoxCollision();
+
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Basic Info", meta = (AllowPrivateAccess = "true"))
+	class UStaticMeshComponent* Mesh;
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Basic Info", meta = (AllowPrivateAccess = "true"))
@@ -30,6 +41,6 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Basic Info", meta = (AllowPrivateAccess = "true"))
 	FString Description;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Basic Info", meta = (AllowPrivateAccess = "true"))
-	class UStaticMeshComponent* Mesh;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Interaction", meta = (AllowPrivateAccess = "true"))
+	class UBoxComponent* BoxCollision;
 };

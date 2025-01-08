@@ -49,6 +49,7 @@ void AAscender::BeginPlay()
 	AddDefaultInputMappingContext();
 	EquippedWeapon = Cast<AWeapon>(SpawnEquipment(WeaponClass, TEXT("weapon_sheath")));
 	InitializePlayerHUD();
+	StatusWidget = Cast<UAscensionPlayerHUD>(PlayerHUD->GetWidget());
 }
 
 void AAscender::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -65,6 +66,8 @@ void AAscender::Tick(float DeltaTime)
 
 	ClampLookUpAngle();
 	RotateWhileRolling(DeltaTime);
+	UpdateHealthWidget();
+	UpdateStaminaWidget();
 }
 
 // Called to bind functionality to input
@@ -121,9 +124,9 @@ void AAscender::InitializeComponents()
 {
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
-	CombatComponent = CreateDefaultSubobject<UCombatComponent>(TEXT("Combat"));
 	StimulusSource = CreateDefaultSubobject<UAIPerceptionStimuliSourceComponent>(TEXT("Stimulus"));
 	PlayerHUD = CreateDefaultSubobject<UWidgetComponent>("PlayerHUD");
+	CombatComponent = CreateDefaultSubobject<UCombatComponent>(TEXT("Combat"));
 }
 
 void AAscender::InitializePlayerHUD()
@@ -132,6 +135,7 @@ void AAscender::InitializePlayerHUD()
 	{
 		TSubclassOf<UUserWidget> WidgetClass = PlayerHUD->GetWidgetClass();
 		auto* Widget = CreateWidget(GetWorld(), WidgetClass);
+		PlayerHUD->SetWidget(Widget);
 		if (Widget != nullptr)
 		{
 			Widget->AddToPlayerScreen();
@@ -190,6 +194,22 @@ void AAscender::CalculateRollTargetDirection()
 	if (RollTargetDirection.IsZero())
 	{
 		RollTargetDirection = GetActorForwardVector();
+	}
+}
+
+void AAscender::UpdateHealthWidget()
+{
+	if (StatusWidget != nullptr)
+	{
+		StatusWidget->SetHealthPercent(CombatComponent->GetHealth() / CombatComponent->GetMaxHealth());
+	}
+}
+
+void AAscender::UpdateStaminaWidget()
+{
+	if (StatusWidget != nullptr)
+	{
+		StatusWidget->SetStaminaPercent(CombatComponent->GetStamina() / CombatComponent->GetMaxStamina());
 	}
 }
 

@@ -19,8 +19,8 @@ void ACombatNPC::BeginPlay()
 {
 	Super::BeginPlay();
 	EquippedWeapon = Cast<AWeapon>(SpawnEquipment(WeaponClass, TEXT("weapon_socket")));
-	if (Cast<UAscensionEnemyHUD>(HUD->GetWidget()) != nullptr)	UE_LOG(LogTemp, Warning, TEXT("casting valid"))
 	Widget = Cast<UAscensionEnemyHUD>(HUD->GetWidget());
+	UpdateHealthWidget();
 }
 
 void ACombatNPC::UpdateHealthWidget()
@@ -37,7 +37,6 @@ void ACombatNPC::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	SetRotationToPlayer(DeltaTime);
-	UpdateHealthWidget();
 }
 
 void ACombatNPC::MeleeAttack_Implementation()

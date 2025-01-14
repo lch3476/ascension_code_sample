@@ -49,6 +49,7 @@ void AAscender::BeginPlay()
 	AddDefaultInputMappingContext();
 	EquippedWeapon = Cast<AWeapon>(SpawnEquipment(WeaponClass, TEXT("weapon_sheath")));
 	StatusWidget = Cast<UAscensionPlayerHUD>(HUD->GetWidget());
+	UpdateHealthWidget();
 }
 
 void AAscender::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -65,8 +66,9 @@ void AAscender::Tick(float DeltaTime)
 
 	ClampLookUpAngle();
 	RotateWhileRolling(DeltaTime);
-	UpdateHealthWidget();
+	
 	UpdateStaminaWidget();
+	CombatComponent->StaminaRegenerate(DeltaTime);
 }
 
 // Called to bind functionality to input
@@ -124,7 +126,7 @@ void AAscender::InitializeComponents()
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	StimulusSource = CreateDefaultSubobject<UAIPerceptionStimuliSourceComponent>(TEXT("Stimulus"));
-	CombatSystem = CreateDefaultSubobject<UCombatComponent>(TEXT("Combat Component"));
+	CombatComponent = CreateDefaultSubobject<UCombatComponent>(TEXT("Combat Component"));
 }
 
 
@@ -150,7 +152,6 @@ UEnhancedInputLocalPlayerSubsystem* AAscender::GetInputLocalPlayerSubsystem()
 	return PlayerController != nullptr ?
 		ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()) : nullptr;
 }
-
 
 void AAscender::ClampLookUpAngle()
 {
@@ -182,32 +183,29 @@ void AAscender::CalculateRollTargetDirection()
 
 void AAscender::UpdateHealthWidget()
 {
-	if (StatusWidget != nullptr && CombatSystem != nullptr)
+	if (StatusWidget != nullptr && CombatComponent != nullptr)
 	{
-		StatusWidget->SetHealthPercent(CombatSystem->GetHealth() / CombatSystem->GetMaxHealth());
+		StatusWidget->SetHealthPercent(CombatComponent->GetHealth() / CombatComponent->GetMaxHealth());
 	}
 }
 
 void AAscender::UpdateStaminaWidget()
 {
-	if (StatusWidget != nullptr && CombatSystem != nullptr)
+	if (StatusWidget != nullptr && CombatComponent != nullptr)
 	{
-		StatusWidget->SetStaminaPercent(CombatSystem->GetStamina() / CombatSystem->GetMaxStamina());
+		StatusWidget->SetStaminaPercent(CombatComponent->GetStamina() / CombatComponent->GetMaxStamina());
 	}
-}
-
-void AAscender::DepleteStamina()
-{
-	
 }
 
 void AAscender::MeleeAttack_Implementation()
 {
 	if (!IsSheath() 
 		&& CanAttack() 
-		&& !GetMovementComponent()->IsFalling())
+		&& !GetMovementComponent()->IsFalling()
+		&& CombatComponent->HasEnoughStamina())
 	{
-		CombatSystem->ComboAttack(AscenderAnimMontages.ComboAttackMontages);
+		CombatComponent->DepleteStamina();
+		CombatComponent->ComboAttack(AscenderAnimMontages.ComboAttackMontages);
 	}
 }
 
@@ -216,10 +214,12 @@ void AAscender::DashAttack_Implementation()
 {
 	if (!IsSheath()
 		&& CanAttack()
-		&& !GetMovementComponent()->IsFalling())
+		&& !GetMovementComponent()->IsFalling()
+		&& CombatComponent->HasEnoughStamina())
 	{
-		CombatSystem->ResetCombo();
-		CombatSystem->Attack(AscenderAnimMontages.DashAttackMontage);
+		CombatComponent->ResetCombo();
+		CombatComponent->DepleteStamina();
+		CombatComponent->Attack(AscenderAnimMontages.DashAttackMontage);
 	}
 }
 
@@ -278,7 +278,7 @@ bool AAscender::GetIsRolling()
 
 UCombatComponent* AAscender::GetCombatComponent()
 {
-	return CombatSystem;
+	return CombatComponent;
 }
 
 void AAscender::OnMoveForwardPressed(const FInputActionInstance& Instance)
@@ -332,14 +332,15 @@ void AAscender::OnRollPressed()
 	if (BehaviorState != nullptr)
 	{
 		if (!IsAnimMontagePlaying() 
-			&& !GetMovementComponent()->IsFalling())
+			&& !GetMovementComponent()->IsFalling()
+			&& CombatComponent->HasEnoughStamina())
 		{
 			SetCanAttack(false);
 			BehaviorState->bIsRolling = true;
 			float Length;
 
 			CalculateRollTargetDirection();
-
+			CombatComponent->DepleteStamina();
 			if (BehaviorState->bIsSheath)
 			{
 				Length = PlayAnimMontage(AscenderAnimMontages.RollForwardMontage);

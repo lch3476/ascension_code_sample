@@ -70,11 +70,10 @@ private:
 	void BindInputActionToComponent(class UInputComponent* PlayerInputComponent);
 	class UEnhancedInputLocalPlayerSubsystem* GetInputLocalPlayerSubsystem();
 
-	//void RenerateStamina();
 	void ClampLookUpAngle();
 	void RotateWhileRolling(float DeltaTime);
 	void CalculateRollTargetDirection();
-	void UpdateHealthWidget();
+	void UpdateHealthWidget() override;
 	void UpdateStaminaWidget();
 	//void DepleteStamina();
 
@@ -93,7 +92,7 @@ private:
 	class UCameraComponent* Camera;
 
 	UPROPERTY(EditAnywhere, Category = "Combat")
-	UCombatComponent* CombatSystem;
+	UCombatComponent* CombatComponent;
 
 	class UAscensionPlayerHUD* StatusWidget;
 

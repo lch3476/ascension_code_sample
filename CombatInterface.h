@@ -25,11 +25,9 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void MeleeAttack();
-
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void DashAttack();
-
 	virtual void OnDeath() = 0;
-
 	virtual class AWeapon* GetWeapon() = 0;
+	virtual void UpdateHealthWidget() = 0;
 };

@@ -29,14 +29,16 @@ public:
 	float GetMaxStamina() const;
 	void SetStamina(const float Stamina);
 
+	void StaminaRegenerate(float DeltaTime);
+	void DepleteStamina();
+	bool HasEnoughStamina();
+
 	UFUNCTION()
 	virtual void OnDamaged(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser);
 
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
-
-private:
 
 public:	
 	// Called every frame
@@ -57,6 +59,4 @@ private:
 	FCombatStatus Status;
 
 	class AAscensionCharacter* OwnerCharacter;
-
-	class UAnimInstance* AnimInstance;
 };

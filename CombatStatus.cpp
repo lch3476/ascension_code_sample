@@ -9,6 +9,7 @@ FCombatStatus::FCombatStatus()
 	MaxStamina(100.f),
 	Stamina(MaxStamina),
 	StaminaRegenerationRate(20.f),
+	MinStaminaForAction(20.f),
 	Strength(10),
 	Endurance(10)
 {

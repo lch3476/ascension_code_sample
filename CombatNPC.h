@@ -34,7 +34,7 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
-	void UpdateHealthWidget();
+	void UpdateHealthWidget() override;
 
 protected:
 	UPROPERTY(EditAnywhere, Category = "Equipment")

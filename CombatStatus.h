@@ -26,11 +26,14 @@ public:
 	UPROPERTY(EditAnywhere)
 	float MaxStamina;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere)
 	float Stamina;
 
 	UPROPERTY(EditAnywhere)
 	float StaminaRegenerationRate;
+
+	UPROPERTY(EditAnywhere)
+	float MinStaminaForAction;
 
 	UPROPERTY(EditAnywhere)
 	int32 Strength;

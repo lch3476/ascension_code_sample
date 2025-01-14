@@ -30,7 +30,6 @@ public:
 	class UWidgetComponent* GetHUD();
 
 	float PlayRandomMontage(TArray<class UAnimMontage*> Montages);
-	void StopPlayingCurrentMontage();
 
 protected:
 	// Called when the game starts or when spawned

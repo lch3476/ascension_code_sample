@@ -22,7 +22,6 @@ UCombatComponent::UCombatComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = false;
 
-	// ...
 }
 
 // Called when the game starts
@@ -30,8 +29,6 @@ void UCombatComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
-	AnimInstance = OwnerCharacter->GetMesh()->GetAnimInstance();
 	Status.HP = Status.MaxHP;
 	GetOwner()->OnTakeAnyDamage.AddDynamic(this, &UCombatComponent::OnDamaged);
 }
@@ -42,7 +39,6 @@ void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
 }
 
 void UCombatComponent::Attack(UAnimMontage* AttackAnimMontage)
@@ -52,7 +48,7 @@ void UCombatComponent::Attack(UAnimMontage* AttackAnimMontage)
 		OwnerCharacter->SetIsAttacking(true);
 		OwnerCharacter->SetCanMove(false);
 		OwnerCharacter->SetCanAttack(false);
-		float Length = AnimInstance->Montage_Play(AttackAnimMontage);
+		float Length = OwnerCharacter->PlayAnimMontage(AttackAnimMontage);
 		FTimerHandle TimerHandle;
 		OwnerCharacter->GetWorldTimerManager().SetTimer(
 			TimerHandle,
@@ -89,6 +85,11 @@ void UCombatComponent::OnDamaged(AActor* DamagedActor, float Damage, const UDama
 				float DamageAmount = FMath::Clamp(Weapon->GetStatus().ATK, 0.0f, GetHealth());
 				SetHealth(GetHealth() - DamageAmount);
 
+				ICombatInterface* DamagedCharacter = Cast<ICombatInterface>(OwnerCharacter);
+				if (DamagedCharacter != nullptr)
+				{
+					DamagedCharacter->UpdateHealthWidget();
+				}
 				OwnerCharacter->StopAnimMontage(OwnerCharacter->GetCurrentMontage());
 				OwnerCharacter->PlayRandomMontage(DamagedMontages);
 			}
@@ -130,5 +131,27 @@ float UCombatComponent::GetMaxStamina() const
 void UCombatComponent::SetStamina(const float Stamina)
 {
 	Status.Stamina = Stamina;
+}
+
+void UCombatComponent::StaminaRegenerate(float DeltaTime)
+{
+	if (!OwnerCharacter->IsAnimMontagePlaying())
+	{
+		float NewStamina = GetStamina() + Status.StaminaRegenerationRate * DeltaTime;
+		NewStamina = FMath::Clamp(NewStamina, 0.0f, GetMaxStamina());
+		SetStamina(NewStamina);
+	}
+}
+
+void UCombatComponent::DepleteStamina()
+{
+	float NewStamina = GetStamina() - Status.MinStaminaForAction;
+	NewStamina = FMath::Clamp(NewStamina, 0.0f, GetMaxStamina());
+	SetStamina(NewStamina);
+}
+
+bool UCombatComponent::HasEnoughStamina()
+{
+	return GetStamina() >= Status.MinStaminaForAction;
 }
 

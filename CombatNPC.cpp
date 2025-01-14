@@ -5,17 +5,30 @@
 
 #include "CombatComponent.h"
 #include "Weapon.h"
+#include "Components/WidgetComponent.h"
+#include "Blueprint/UserWidget.h"
+#include "AscensionEnemyHUD.h"
 
 
 ACombatNPC::ACombatNPC()
+	:CombatSystem(CreateDefaultSubobject<UCombatComponent>(TEXT("Combat Component")))
 {
-	CombatComponent = CreateDefaultSubobject<UCombatComponent>(TEXT("Combat Component"));
 }
 
 void ACombatNPC::BeginPlay()
 {
 	Super::BeginPlay();
 	EquippedWeapon = Cast<AWeapon>(SpawnEquipment(WeaponClass, TEXT("weapon_socket")));
+	if (Cast<UAscensionEnemyHUD>(HUD->GetWidget()) != nullptr)	UE_LOG(LogTemp, Warning, TEXT("casting valid"))
+	Widget = Cast<UAscensionEnemyHUD>(HUD->GetWidget());
+}
+
+void ACombatNPC::UpdateHealthWidget()
+{
+	if (Widget != nullptr && CombatSystem != nullptr)
+	{
+		Widget->SetHealthPercent(CombatSystem->GetHealth() / CombatSystem->GetMaxHealth());
+	}
 }
 
 
@@ -24,6 +37,7 @@ void ACombatNPC::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	SetRotationToPlayer(DeltaTime);
+	UpdateHealthWidget();
 }
 
 void ACombatNPC::MeleeAttack_Implementation()

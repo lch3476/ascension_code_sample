@@ -25,6 +25,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetCanMove(bool bCanMove);
 
+
+	UFUNCTION(BlueprintCallable)
+	class UWidgetComponent* GetHUD();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -34,6 +38,7 @@ protected:
 	void SetCharacterMovability(bool bCanMove);
 	bool CanMove();
 	bool CanAttack();
+	void SetupHUD();
 
 public:	
 	// Called every frame
@@ -56,4 +61,7 @@ public:
 protected:
 
 	FCharacterBehaviorState* BehaviorState;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	class UWidgetComponent* HUD;
 };

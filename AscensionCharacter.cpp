@@ -2,17 +2,20 @@
 
 
 #include "AscensionCharacter.h"
+
 #include "GameFramework/CharacterMovementComponent.h"
 #include "EquipableItem.h"
 #include "CharacterBehaviorState.h"
+#include "Components/WidgetComponent.h"
 
 // Sets default values
 AAscensionCharacter::AAscensionCharacter()
-	: BehaviorState(new FCharacterBehaviorState())
+	: BehaviorState(new FCharacterBehaviorState()),
+	HUD(CreateDefaultSubobject<UWidgetComponent>("HUD"))
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
+	if (HUD != nullptr) HUD->SetupAttachment(RootComponent);
 }
 
 float AAscensionCharacter::GetCurrentSpeed()
@@ -40,11 +43,17 @@ void AAscensionCharacter::SetCanMove(bool bCanMove)
 	}
 }
 
+UWidgetComponent* AAscensionCharacter::GetHUD()
+{
+	return HUD;
+}
+
 // Called when the game starts or when spawned
 void AAscensionCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	SetupHUD();
 }
 
 AEquipableItem* AAscensionCharacter::SpawnEquipment(UClass* EquipmentClass, FName SocketName)
@@ -94,6 +103,20 @@ bool AAscensionCharacter::CanAttack()
 		return BehaviorState->bCanAttack;
 	}
 	return false;
+}
+
+void AAscensionCharacter::SetupHUD()
+{
+	if (HUD != nullptr)
+	{
+		TSubclassOf<UUserWidget> WidgetClass = HUD->GetWidgetClass();
+		auto* Widget = CreateWidget(GetWorld(), WidgetClass);
+		HUD->SetWidget(Widget);
+		if (Widget != nullptr)
+		{
+			Widget->AddToPlayerScreen();
+		}
+	}
 }
 
 // Called every frame

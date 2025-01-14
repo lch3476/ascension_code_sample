@@ -94,8 +94,13 @@ void UCombatComponent::OnDamaged(AActor* DamagedActor, float Damage, const UDama
 				{
 					AnimInstance->Montage_Stop(0.2f, CurrentMontage);
 				}
+				
+				UAnimMontage* DamagedMontagesToPlay = nullptr;
+				if (DamagedMontages.Num() > 0)
+				{
+					DamagedMontagesToPlay = DamagedMontages[FMath::RandRange(0, DamagedMontages.Num()-1)];
+				}
 
-				UAnimMontage* DamagedMontagesToPlay = DamagedMontages[FMath::RandRange(0, DamagedMontages.Num()-1)];
 				if (DamagedMontagesToPlay != nullptr)
 				{
 					AnimInstance->Montage_Play(DamagedMontagesToPlay);

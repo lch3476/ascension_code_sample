@@ -48,14 +48,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	class UCombatComponent* GetCombatComponent();
 
-	UFUNCTION(BlueprintCallable) 
-	class UWidgetComponent* GetPlayerHUD();
-
 private:
 
 	void InitializeInputActionAndContext();
 	void InitializeComponents();
-	void InitializePlayerHUD();
 	void SetupComponentsAttachment();
 	void SetupStimulusSource();
 
@@ -97,9 +93,6 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	UCombatComponent* CombatSystem;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	class UWidgetComponent* PlayerHUD;
 
 	class UAscensionPlayerHUD* StatusWidget;
 

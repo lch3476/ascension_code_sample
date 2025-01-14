@@ -6,13 +6,11 @@
 
 ADarkKnight::ADarkKnight()
 {
-	if (CombatComponent != nullptr) UE_LOG(LogTemp, Warning, TEXT("cp darkknight"));
 }
 
 void ADarkKnight::BeginPlay()
 {
 	Super::BeginPlay();
-	if (CombatComponent != nullptr) UE_LOG(LogTemp, Warning, TEXT("cp darkknight"));
 }
 
 void ADarkKnight::Tick(float DeltaTime)

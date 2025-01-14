@@ -48,8 +48,7 @@ void AAscender::BeginPlay()
 
 	AddDefaultInputMappingContext();
 	EquippedWeapon = Cast<AWeapon>(SpawnEquipment(WeaponClass, TEXT("weapon_sheath")));
-	InitializePlayerHUD();
-	StatusWidget = Cast<UAscensionPlayerHUD>(PlayerHUD->GetWidget());
+	StatusWidget = Cast<UAscensionPlayerHUD>(HUD->GetWidget());
 }
 
 void AAscender::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -124,23 +123,8 @@ void AAscender::InitializeComponents()
 {
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
-	PlayerHUD = CreateDefaultSubobject<UWidgetComponent>("PlayerHUD");
 	StimulusSource = CreateDefaultSubobject<UAIPerceptionStimuliSourceComponent>(TEXT("Stimulus"));
 	CombatSystem = CreateDefaultSubobject<UCombatComponent>(TEXT("Combat Component"));
-}
-
-void AAscender::InitializePlayerHUD()
-{
-	if (PlayerHUD != nullptr)
-	{
-		TSubclassOf<UUserWidget> WidgetClass = PlayerHUD->GetWidgetClass();
-		auto* Widget = CreateWidget(GetWorld(), WidgetClass);
-		PlayerHUD->SetWidget(Widget);
-		if (Widget != nullptr)
-		{
-			Widget->AddToPlayerScreen();
-		}
-	}
 }
 
 
@@ -148,7 +132,6 @@ void AAscender::SetupComponentsAttachment()
 {
 	if (SpringArm != nullptr) SpringArm->SetupAttachment(RootComponent);
 	if (Camera != nullptr) Camera->SetupAttachment(SpringArm);
-	if (PlayerHUD != nullptr) PlayerHUD->SetupAttachment(RootComponent);
 }
 
 void AAscender::SetupStimulusSource()
@@ -291,11 +274,6 @@ bool AAscender::GetIsRolling()
 UCombatComponent* AAscender::GetCombatComponent()
 {
 	return CombatSystem;
-}
-
-UWidgetComponent* AAscender::GetPlayerHUD()
-{
-	return PlayerHUD;
 }
 
 void AAscender::OnMoveForwardPressed(const FInputActionInstance& Instance)

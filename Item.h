@@ -28,7 +28,6 @@ protected:
 		const FHitResult& SweepResult) PURE_VIRTUAL(AItem::OnComponentBeginOverlap, );
 
 private:
-	void SetupBoxCollision();
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Basic Info", meta = (AllowPrivateAccess = "true"))
@@ -40,7 +39,4 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Basic Info", meta = (AllowPrivateAccess = "true"))
 	FString Description;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Interaction", meta = (AllowPrivateAccess = "true"))
-	class UBoxComponent* BoxCollision;
 };

@@ -124,9 +124,9 @@ void AAscender::InitializeComponents()
 {
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
-	StimulusSource = CreateDefaultSubobject<UAIPerceptionStimuliSourceComponent>(TEXT("Stimulus"));
 	PlayerHUD = CreateDefaultSubobject<UWidgetComponent>("PlayerHUD");
-	CombatComponent = CreateDefaultSubobject<UCombatComponent>(TEXT("Combat"));
+	StimulusSource = CreateDefaultSubobject<UAIPerceptionStimuliSourceComponent>(TEXT("Stimulus"));
+	CombatSystem = CreateDefaultSubobject<UCombatComponent>(TEXT("Combat Component"));
 }
 
 void AAscender::InitializePlayerHUD()
@@ -182,7 +182,7 @@ void AAscender::RotateWhileRolling(float DeltaTime)
 	{
 		FRotator TargetRotation = FRotationMatrix::MakeFromX(RollTargetDirection).Rotator();
 
-		FRotator NewRotation = FMath::RInterpTo(GetActorRotation(), TargetRotation, DeltaTime, 20.0f);
+		FRotator NewRotation = FMath::RInterpTo(GetActorRotation(), TargetRotation, DeltaTime, 25.0f);
 		SetActorRotation(NewRotation);
 	}
 }
@@ -199,17 +199,17 @@ void AAscender::CalculateRollTargetDirection()
 
 void AAscender::UpdateHealthWidget()
 {
-	if (StatusWidget != nullptr)
+	if (StatusWidget != nullptr && CombatSystem != nullptr)
 	{
-		StatusWidget->SetHealthPercent(CombatComponent->GetHealth() / CombatComponent->GetMaxHealth());
+		StatusWidget->SetHealthPercent(CombatSystem->GetHealth() / CombatSystem->GetMaxHealth());
 	}
 }
 
 void AAscender::UpdateStaminaWidget()
 {
-	if (StatusWidget != nullptr)
+	if (StatusWidget != nullptr && CombatSystem != nullptr)
 	{
-		StatusWidget->SetStaminaPercent(CombatComponent->GetStamina() / CombatComponent->GetMaxStamina());
+		StatusWidget->SetStaminaPercent(CombatSystem->GetStamina() / CombatSystem->GetMaxStamina());
 	}
 }
 
@@ -219,7 +219,7 @@ void AAscender::MeleeAttack_Implementation()
 		&& CanAttack() 
 		&& !GetMovementComponent()->IsFalling())
 	{
-		CombatComponent->ComboAttack(AscenderAnimMontages.ComboAttackMontages);
+		CombatSystem->ComboAttack(AscenderAnimMontages.ComboAttackMontages);
 	}
 }
 
@@ -230,8 +230,8 @@ void AAscender::DashAttack_Implementation()
 		&& CanAttack()
 		&& !GetMovementComponent()->IsFalling())
 	{
-		CombatComponent->ResetCombo();
-		CombatComponent->Attack(AscenderAnimMontages.DashAttackMontage);
+		CombatSystem->ResetCombo();
+		CombatSystem->Attack(AscenderAnimMontages.DashAttackMontage);
 	}
 }
 
@@ -239,10 +239,11 @@ void AAscender::OnDeath()
 {
 }
 
-void AAscender::OnDamaged()
-{
-}
 
+AWeapon* AAscender::GetWeapon()
+{
+	return EquippedWeapon;
+}
 
 
 bool AAscender::IsSheath()
@@ -289,7 +290,7 @@ bool AAscender::GetIsRolling()
 
 UCombatComponent* AAscender::GetCombatComponent()
 {
-	return CombatComponent;
+	return CombatSystem;
 }
 
 UWidgetComponent* AAscender::GetPlayerHUD()
@@ -300,7 +301,6 @@ UWidgetComponent* AAscender::GetPlayerHUD()
 void AAscender::OnMoveForwardPressed(const FInputActionInstance& Instance)
 {
 	if (!GetMovementComponent()->IsFalling()
-		&& CanMove()
 		&& !IsAnimMontagePlaying())
 	{
 		FRotator ControlRotation = GetControlRotation();
@@ -318,7 +318,6 @@ void AAscender::OnMoveForwardPressed(const FInputActionInstance& Instance)
 void AAscender::OnMoveRightPressed(const FInputActionInstance& Instance)
 {
 	if (!GetMovementComponent()->IsFalling()
-		&& CanMove()
 		&& !IsAnimMontagePlaying())
 	{
 		FRotator ControlRotation = GetControlRotation();
@@ -368,7 +367,7 @@ void AAscender::OnRollPressed()
 			}
 
 			FTimerHandle TimerHandle;
-			GetWorldTimerManager().SetTimer(TimerHandle, [this]() { BehaviorState->bIsRolling = false; }, Length, false);
+			GetWorldTimerManager().SetTimer(TimerHandle, [this]() { BehaviorState->bIsRolling = false; }, Length - 0.3f, false);
 
 		}
 	}

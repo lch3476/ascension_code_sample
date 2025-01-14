@@ -19,6 +19,8 @@ public:
 	AWeapon();
 	
 	virtual void BeginPlay() override;
+	
+	FWeaponStatus GetStatus();
 
 protected:
 	virtual void OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,

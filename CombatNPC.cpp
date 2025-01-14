@@ -47,6 +47,8 @@ void ACombatNPC::OnDeath()
 {
 }
 
-void ACombatNPC::OnDamaged()
+
+AWeapon* ACombatNPC::GetWeapon()
 {
+	return EquippedWeapon;
 }

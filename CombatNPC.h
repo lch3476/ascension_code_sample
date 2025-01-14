@@ -25,7 +25,8 @@ public:
 	void MeleeAttack_Implementation() override;
 	void DashAttack_Implementation() override;
 	void OnDeath() override;
-	void OnDamaged() override;
+
+	class AWeapon* GetWeapon() override;
 
 
 protected:
@@ -38,10 +39,11 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	AWeapon* EquippedWeapon;
-
-private:
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
 	class UCombatComponent* CombatComponent;
+
+private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat", meta = (AllowPrivateAccess = "true"))
 	TArray<class UAnimMontage*> AttackMontages;

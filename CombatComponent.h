@@ -29,6 +29,9 @@ public:
 	float GetMaxStamina() const;
 	void SetStamina(const float Stamina);
 
+	UFUNCTION()
+	virtual void OnDamaged(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser);
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -44,7 +47,12 @@ public:
 
 	int32 CurrentComboIndex = 0;
 
+
 private:
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
+	TArray<class UAnimMontage*> DamagedMontages;
+
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	FCombatStatus Status;
 

@@ -84,7 +84,8 @@ private:
 	void MeleeAttack_Implementation() override;
 	void DashAttack_Implementation() override;
 	void OnDeath() override;
-	void OnDamaged() override;
+
+	class AWeapon* GetWeapon() override;
 
 private:
 
@@ -94,8 +95,8 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* Camera;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
-	UCombatComponent* CombatComponent;
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	UCombatComponent* CombatSystem;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class UWidgetComponent* PlayerHUD;

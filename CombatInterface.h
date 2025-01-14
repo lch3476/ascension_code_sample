@@ -30,5 +30,6 @@ public:
 	void DashAttack();
 
 	virtual void OnDeath() = 0;
-	virtual void OnDamaged() = 0;
+
+	virtual class AWeapon* GetWeapon() = 0;
 };

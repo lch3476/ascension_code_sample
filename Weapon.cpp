@@ -13,6 +13,11 @@ void AWeapon::BeginPlay()
 {
 }
 
+FWeaponStatus AWeapon::GetStatus()
+{
+	return Status;
+}
+
 void AWeapon::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComp, 
 	AActor* OtherActor,
 	UPrimitiveComponent* OtherComp,

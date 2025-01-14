@@ -22,7 +22,6 @@ public:
 	void MeleeAttack_Implementation() override;
 	void DashAttack_Implementation() override;
 	void OnDeath() override;
-	void OnDamaged() override;
 
 protected:
 	// Called when the game starts or when spawned

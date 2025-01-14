@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
+#include "CombatComponent.h"
 
 #include "GameFramework/Character.h"
 #include "AscensionCharacter.h"
@@ -8,8 +9,10 @@
 #include "Ascender.h"
 #include "Components/WidgetComponent.h"
 #include "AscensionPlayerHUD.h"
+#include "Kismet/GameplayStatics.h"
+#include "Animation/AnimMontage.h"
+#include "Weapon.h"
 
-#include "CombatComponent.h"
 
 // Sets default values for this component's properties
 UCombatComponent::UCombatComponent()
@@ -30,6 +33,7 @@ void UCombatComponent::BeginPlay()
 	// ...
 	AnimInstance = OwnerCharacter->GetMesh()->GetAnimInstance();
 	Status.HP = Status.MaxHP;
+	GetOwner()->OnTakeAnyDamage.AddDynamic(this, &UCombatComponent::OnDamaged);
 }
 
 
@@ -72,6 +76,35 @@ void UCombatComponent::ComboAttack(TArray<UAnimMontage*> ComboMontages)
 	}
 }
 
+void UCombatComponent::OnDamaged(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
+{
+	if (DamageCauser != nullptr && DamagedActor != nullptr)
+	{
+		ICombatInterface* Attacker = Cast<ICombatInterface>(DamageCauser);
+		if (Attacker != nullptr)
+		{
+			AWeapon* Weapon = Attacker->GetWeapon();
+			if (Weapon != nullptr)
+			{
+				float DamageAmount = FMath::Clamp(Weapon->GetStatus().ATK, 0.0f, GetHealth());
+				SetHealth(GetHealth() - DamageAmount);
+
+				UAnimMontage* CurrentMontage = AnimInstance->GetCurrentActiveMontage();
+				if (CurrentMontage != nullptr)
+				{
+					AnimInstance->Montage_Stop(0.2f, CurrentMontage);
+				}
+
+				UAnimMontage* DamagedMontagesToPlay = DamagedMontages[FMath::RandRange(0, DamagedMontages.Num()-1)];
+				if (DamagedMontagesToPlay != nullptr)
+				{
+					AnimInstance->Montage_Play(DamagedMontagesToPlay);
+				}
+			}
+		}
+	}
+}
+
 void UCombatComponent::ResetCombo()
 {
 	CurrentComboIndex = 0;
@@ -107,5 +140,4 @@ void UCombatComponent::SetStamina(const float Stamina)
 {
 	Status.Stamina = Stamina;
 }
-
 

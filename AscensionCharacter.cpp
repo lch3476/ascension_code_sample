@@ -119,6 +119,24 @@ void AAscensionCharacter::SetupHUD()
 	}
 }
 
+float AAscensionCharacter::PlayRandomMontage(TArray<class UAnimMontage*> Montages)
+{
+	
+	UAnimMontage* MontageToPlay = nullptr;
+	if (Montages.Num() > 0)
+	{
+		MontageToPlay = Montages[FMath::RandRange(0, Montages.Num() - 1)];
+	}
+
+	float Length = 0.0f;
+	if (MontageToPlay != nullptr)
+	{
+		Length = PlayAnimMontage(MontageToPlay);
+	}
+
+	return Length;
+}
+
 // Called every frame
 void AAscensionCharacter::Tick(float DeltaTime)
 {

@@ -196,6 +196,11 @@ void AAscender::UpdateStaminaWidget()
 	}
 }
 
+void AAscender::DepleteStamina()
+{
+	
+}
+
 void AAscender::MeleeAttack_Implementation()
 {
 	if (!IsSheath() 

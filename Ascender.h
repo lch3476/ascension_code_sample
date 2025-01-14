@@ -76,6 +76,7 @@ private:
 	void CalculateRollTargetDirection();
 	void UpdateHealthWidget();
 	void UpdateStaminaWidget();
+	//void DepleteStamina();
 
 	void MeleeAttack_Implementation() override;
 	void DashAttack_Implementation() override;

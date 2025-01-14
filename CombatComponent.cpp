@@ -89,22 +89,8 @@ void UCombatComponent::OnDamaged(AActor* DamagedActor, float Damage, const UDama
 				float DamageAmount = FMath::Clamp(Weapon->GetStatus().ATK, 0.0f, GetHealth());
 				SetHealth(GetHealth() - DamageAmount);
 
-				UAnimMontage* CurrentMontage = AnimInstance->GetCurrentActiveMontage();
-				if (CurrentMontage != nullptr)
-				{
-					AnimInstance->Montage_Stop(0.2f, CurrentMontage);
-				}
-				
-				UAnimMontage* DamagedMontagesToPlay = nullptr;
-				if (DamagedMontages.Num() > 0)
-				{
-					DamagedMontagesToPlay = DamagedMontages[FMath::RandRange(0, DamagedMontages.Num()-1)];
-				}
-
-				if (DamagedMontagesToPlay != nullptr)
-				{
-					AnimInstance->Montage_Play(DamagedMontagesToPlay);
-				}
+				OwnerCharacter->StopAnimMontage(OwnerCharacter->GetCurrentMontage());
+				OwnerCharacter->PlayRandomMontage(DamagedMontages);
 			}
 		}
 	}

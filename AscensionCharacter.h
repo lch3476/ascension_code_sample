@@ -25,6 +25,11 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetCanMove(bool bCanMove);
 
+	UFUNCTION(BlueprintCallable)
+	bool GetIsDead();
+
+	UFUNCTION(BlueprintCallable)
+	void SetIsDead(bool IsDead);
 
 	UFUNCTION(BlueprintCallable)
 	class UWidgetComponent* GetHUD();

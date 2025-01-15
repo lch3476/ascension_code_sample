@@ -16,6 +16,6 @@ class ASCENSION_API AEquipableItem : public AItem
 
 public:
 	virtual void OnEquip() PURE_VIRTUAL(AEquipableItem::OnEquip, );
-
+	void CleanOwner();
 protected:
 };

@@ -8,6 +8,9 @@
 #include "Components/WidgetComponent.h"
 #include "Blueprint/UserWidget.h"
 #include "AscensionEnemyHUD.h"
+#include "AIController.h"
+#include "BehaviorTree/BehaviorTree.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 
 ACombatNPC::ACombatNPC()
@@ -58,6 +61,19 @@ void ACombatNPC::DashAttack_Implementation()
 
 void ACombatNPC::OnDeath()
 {
+	StopAnimMontage();
+	GetCharacterMovement()->DisableMovement();
+	AAIController* AIController = Cast<AAIController>(GetController());
+	EquippedWeapon->CleanOwner();
+	if (AIController != nullptr)
+	{
+		AIController->GetBrainComponent()->StopLogic(TEXT("Death"));
+	}
+	FTimerHandle TimerHandle;
+	GetWorldTimerManager().SetTimer(TimerHandle,
+		[this]() {  EquippedWeapon->Destroy(); Destroy(); },
+		7.0f,
+		false);
 }
 
 

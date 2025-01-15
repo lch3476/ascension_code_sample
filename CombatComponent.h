@@ -35,6 +35,7 @@ public:
 
 	UFUNCTION()
 	virtual void OnDamaged(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser);
+	void OnDeath();
 
 protected:
 	// Called when the game starts
@@ -53,7 +54,10 @@ public:
 private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
-	TArray<class UAnimMontage*> DamagedMontages;
+	TArray<class UAnimMontage*> DamagedAnimMontages;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat", meta = (AllowPrivateAccess = "true"))
+	UAnimMontage* DeathAnimMontage;
 
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	FCombatStatus Status;

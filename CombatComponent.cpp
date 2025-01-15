@@ -12,6 +12,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "Animation/AnimMontage.h"
 #include "Weapon.h"
+#include "Components/CapsuleComponent.h"
+#include "CharacterBehaviorState.h"
 
 
 // Sets default values for this component's properties
@@ -76,23 +78,50 @@ void UCombatComponent::OnDamaged(AActor* DamagedActor, float Damage, const UDama
 {
 	if (DamageCauser != nullptr && DamagedActor != nullptr)
 	{
-		ICombatInterface* Attacker = Cast<ICombatInterface>(DamageCauser);
-		if (Attacker != nullptr)
+		if (!OwnerCharacter->GetIsDead())
 		{
-			AWeapon* Weapon = Attacker->GetWeapon();
-			if (Weapon != nullptr)
+			ICombatInterface* Attacker = Cast<ICombatInterface>(DamageCauser);
+			if (Attacker != nullptr)
 			{
-				float DamageAmount = FMath::Clamp(Weapon->GetStatus().ATK, 0.0f, GetHealth());
-				SetHealth(GetHealth() - DamageAmount);
-
-				ICombatInterface* DamagedCharacter = Cast<ICombatInterface>(OwnerCharacter);
-				if (DamagedCharacter != nullptr)
+				AWeapon* Weapon = Attacker->GetWeapon();
+				if (Weapon != nullptr)
 				{
-					DamagedCharacter->UpdateHealthWidget();
+					float DamageAmount = FMath::Clamp(Weapon->GetStatus().ATK, 0.0f, GetHealth());
+					SetHealth(GetHealth() - DamageAmount);
+
+					ICombatInterface* DamagedCharacter = Cast<ICombatInterface>(OwnerCharacter);
+					if (DamagedCharacter != nullptr)
+					{
+						DamagedCharacter->UpdateHealthWidget();
+					}
+					OwnerCharacter->StopAnimMontage(OwnerCharacter->GetCurrentMontage());
+					OwnerCharacter->PlayRandomMontage(DamagedAnimMontages);
+
+					if (GetHealth() <= 0.0f)
+					{
+						OnDeath();
+					}
 				}
-				OwnerCharacter->StopAnimMontage(OwnerCharacter->GetCurrentMontage());
-				OwnerCharacter->PlayRandomMontage(DamagedMontages);
 			}
+		}
+	}
+}
+
+void UCombatComponent::OnDeath()
+{
+	ICombatInterface* DeadCharacter = Cast<ICombatInterface>(OwnerCharacter);
+	if (DeadCharacter != nullptr 
+		&& OwnerCharacter != nullptr)
+	{
+		OwnerCharacter->SetIsDead(true);
+		OwnerCharacter->SetActorTickEnabled(false);
+		DeadCharacter->OnDeath();
+		OwnerCharacter->PlayAnimMontage(DeathAnimMontage);
+		OwnerCharacter->GetBehaviorState()->bIsDead = true;
+		UCapsuleComponent* Capsule = OwnerCharacter->GetCapsuleComponent();
+		if (Capsule != nullptr)
+		{
+			Capsule->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		}
 	}
 }

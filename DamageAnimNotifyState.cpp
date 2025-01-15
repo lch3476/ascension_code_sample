@@ -60,8 +60,6 @@ void UDamageAnimNotifyState::NotifyTick(USkeletalMeshComponent* MeshComp, UAnimS
                     }
                 }
             }
-
-            DrawDebugLine(MeshComp->GetWorld(), Start, End, FColor::Red, false, 3.0f);
         }
     }
 }

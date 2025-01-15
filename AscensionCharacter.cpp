@@ -43,6 +43,16 @@ void AAscensionCharacter::SetCanMove(bool bCanMove)
 	}
 }
 
+bool AAscensionCharacter::GetIsDead()
+{
+	return BehaviorState->bIsDead;
+}
+
+void AAscensionCharacter::SetIsDead(bool IsDead)
+{
+	BehaviorState->bIsDead = IsDead;
+}
+
 UWidgetComponent* AAscensionCharacter::GetHUD()
 {
 	return HUD;

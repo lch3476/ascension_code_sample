@@ -225,6 +225,14 @@ void AAscender::DashAttack_Implementation()
 
 void AAscender::OnDeath()
 {
+	GetCharacterMovement()->DisableMovement();
+	StopAnimMontage();
+	SetCanAttack(false);
+	auto* PlayerController = Cast<APlayerController>(GetController());
+	if (PlayerController != nullptr)
+	{
+		PlayerController->bShowMouseCursor = false;
+	}
 }
 
 

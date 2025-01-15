@@ -38,4 +38,7 @@ public:
 
 	UPROPERTY(BlueprintReadWrite)
 	bool bIsRolling;
+
+	UPROPERTY(BlueprintReadWrite)
+	bool bIsDead;
 };

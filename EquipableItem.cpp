@@ -3,3 +3,7 @@
 
 #include "EquipableItem.h"
 
+void AEquipableItem::CleanOwner()
+{
+	SetOwner(nullptr);
+}
